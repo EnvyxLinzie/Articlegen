@@ -6,6 +6,10 @@ import Article from '@/lib/db/models/Article';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/auth';
 
+// Force dynamic rendering to avoid build-time errors
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 // Simple in-memory rate limiting (in production, use Redis)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 

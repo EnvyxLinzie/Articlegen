@@ -277,4 +277,23 @@ Please return a JSON object with:
   }
 }
 
-export const openRouterService = new OpenRouterService(); 
+// Lazy initialization to avoid errors during build time
+let openRouterServiceInstance: OpenRouterService | null = null;
+
+export const openRouterService = {
+  get instance(): OpenRouterService {
+    if (!openRouterServiceInstance) {
+      openRouterServiceInstance = new OpenRouterService();
+    }
+    return openRouterServiceInstance;
+  },
+  generateArticle: (params: ArticleGenerationParams) => {
+    return openRouterService.instance.generateArticle(params);
+  },
+  improveArticle: (content: string, instructions: string) => {
+    return openRouterService.instance.improveArticle(content, instructions);
+  },
+  generateSeoMetadata: (title: string, content: string) => {
+    return openRouterService.instance.generateSeoMetadata(title, content);
+  },
+}; 

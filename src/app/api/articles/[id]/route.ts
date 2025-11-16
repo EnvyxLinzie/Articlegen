@@ -5,6 +5,10 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/auth';
 import { openRouterService } from '@/lib/ai/openrouter';
 
+// Force dynamic rendering to avoid build-time errors
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 // Simple in-memory rate limiting (per user)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 function checkRateLimit(userId: string, limit: number = 10, windowMs: number = 60000): boolean {
