@@ -61,19 +61,24 @@ class OpenRouterService {
   private apiKey: string;
   private siteUrl: string;
   private siteName: string;
+  private defaultModel: string;
   private baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
 
   constructor() {
     this.apiKey = process.env.OPENROUTER_API_KEY!;
     this.siteUrl = process.env.OPENROUTER_SITE_URL!;
     this.siteName = process.env.OPENROUTER_SITE_NAME!;
+    // Default model bisa diubah via environment variable
+    // Daftar model: https://openrouter.ai/models
+    this.defaultModel = process.env.OPENROUTER_MODEL || 'deepseek/deepseek-chat-v3-0324:free';
 
     if (!this.apiKey) {
       throw new Error('OPENROUTER_API_KEY is required');
     }
   }
 
-  private async makeRequest(messages: OpenRouterMessage[], model: string = 'deepseek/deepseek-chat-v3-0324:free'): Promise<OpenRouterResponse> {
+  private async makeRequest(messages: OpenRouterMessage[], model?: string): Promise<OpenRouterResponse> {
+    const modelToUse = model || this.defaultModel;
     const response = await fetch(this.baseUrl, {
       method: 'POST',
       headers: {
@@ -83,7 +88,7 @@ class OpenRouterService {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model,
+        model: modelToUse,
         messages,
         temperature: 0.7,
         max_tokens: 4000,

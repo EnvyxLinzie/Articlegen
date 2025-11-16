@@ -35,6 +35,9 @@ export async function POST(req: NextRequest) {
     const prompt = `Buatkan 5-10 ide judul artikel yang menarik dan unik, dan 10-20 keyword SEO yang relevan untuk topik berikut (atau random jika kosong): ${safeTopic || "bebas"}. Jawab dengan format JSON:\n{\n  "titles": ["judul 1", ...],\n  "keywords": ["keyword 1", ...]\n}`;
 
     // Panggil OpenRouter API
+    // Model untuk AI ideas (bisa berbeda dengan model untuk generate article)
+    const aiIdeasModel = process.env.OPENROUTER_AI_IDEAS_MODEL || process.env.OPENROUTER_MODEL || "openai/gpt-3.5-turbo";
+    
     const openrouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -42,7 +45,7 @@ export async function POST(req: NextRequest) {
         "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "openai/gpt-3.5-turbo",
+        model: aiIdeasModel,
         messages: [
           { role: "system", content: "Kamu adalah asisten AI kreatif untuk ide artikel." },
           { role: "user", content: prompt },
